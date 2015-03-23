@@ -4,20 +4,30 @@
 (require 2htdp/universe)
 (require picturing-programs)
 
-(define-struct verse (state all msgs))
+(define-struct verse (all msgs))
 
 (define (add-verse verse world)
-  (make-verse (verse-state verse)
-              (cons world (verse-all verse))
+  (make-verse (cons world (verse-all verse))
               (verse-msgs verse)))
 
 (define (add-msg verse msg)
-  (make-verse (verse-state verse)
-              (verse-all verse)
+  (make-verse (verse-all verse)
               (cons msg (verse-msgs verse))))
 
-(check-expect (add-verse (make-verse 'active (list "d" "l" "c")(list "Hi" "Wow" "Oh")) "j")
-              (make-verse 'active (list "j" "d" "l" "c")(list "Hi" "Wow" "Oh")))
+(check-expect (add-verse (make-verse (list "d" "l" "c")(list "Hi" "Wow" "Oh")) "j")
+              (make-verse (list "j" "d" "l" "c")(list "Hi" "Wow" "Oh")))
 
-(check-expect (add-msg (make-verse 'active (list "d" "l" "c")(list "Hi" "Wow" "Oh")) "Hello")
-              (make-verse 'active (list "d" "l" "c")(list "Hello" "Hi" "Wow" "Oh")))
+(check-expect (add-msg (make-verse (list "d" "l" "c")(list "Hi" "Wow" "Oh")) "Hello")
+              (make-verse (list "d" "l" "c")(list "Hello" "Hi" "Wow" "Oh")))
+
+(define (new-world verse world)
+  (make-bundle (add-verse verse world)                           
+                (string-append (iworld-name world) " has joined the chat")))
+
+(check-expect (new-world (make-verse (list "L" "C" "D")
+                                     (list "hi" "boo" "bruh")) 
+                         iworld1)
+              (make-package (make-verse (list iworld1 "L" "C" "D")
+                                        (list "hi" "boo" "bruh"))
+                            "iworld1 has joined the chat"))
+                         
