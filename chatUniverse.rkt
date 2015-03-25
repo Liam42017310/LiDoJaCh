@@ -21,13 +21,14 @@
               (make-verse (list "d" "l" "c")(list "Hello" "Hi" "Wow" "Oh")))
 
 (define (new-world verse world)
-  (make-bundle (add-verse verse world)                           
-                (string-append (iworld-name world) " has joined the chat")))
+  (make-bundle (add-verse (add-msg verse (string-append (iworld-name world) " has entered the chat.")) world)
+               (verse-msgs(add-msg verse (string-append (iworld-name world) " has entered the chat.")))))
 
-(check-expect (new-world (make-verse (list "L" "C" "D")
-                                     (list "hi" "boo" "bruh")) 
+(check-expect (new-world (make-verse (list "a" "b" "c")
+                                     (list "hi" "boo" "why"))
                          iworld1)
-              (make-package (make-verse (list iworld1 "L" "C" "D")
-                                        (list "hi" "boo" "bruh"))
-                            "iworld1 has joined the chat"))
-                         
+              (make-bundle (make-verse (list "iworld" "a" "b" "c")
+                                       (list "iworld has entered the chat" "hi" "boo" "why"))
+                           (list "iworld has entered the chat" "hi" "boo" "why")
+                           (list "iworld" "a" "b" "c")))
+
